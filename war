@@ -1,5 +1,6 @@
 #include <stdio.h>
 #include <string.h>
+#include <stdlib.h>
 
 typedef struct {
     char nomeDoT[30];
@@ -7,15 +8,47 @@ typedef struct {
     int tropas;
 } Territorio;
 
+void combate(Territorio *atacante, Territorio *defensor)
+{
+    if (atacante->tropas > defensor->tropas)
+    {
+        printf("\n\t--- O território %s venceu! ---\n", atacante->nomeDoT);
+        atacante->tropas += defensor->tropas/2;
+        defensor->tropas -=defensor->tropas/2;
+    }
+    else if (atacante->tropas < defensor->tropas)
+    {
+        printf("\n\t--- O território %s venceu! ---\n", defensor->nomeDoT);
+        defensor->tropas += atacante->tropas/2;
+        atacante->tropas -= atacante->tropas/2;
+    }
+    else
+    {
+        printf("\n\t--- O combate empatou. Ambos os exércitos recuaram! ---\n");
+    }
+}
+
 int main()
 {
-    Territorio territorios[5];
+    printf("\t Iniciando o jogo War...\n");
 
-    printf("Insira os dados para a criação dos territórios:\n");
+    int n=0;
 
-    for (int x = 0; x < 5; x++)
+    printf("\nQuantos territórios o jogo terá? ");
+    scanf("%d", &n);
+
+    Territorio *territorios = (Territorio*) malloc(n * sizeof(Territorio));
+
+    if (territorios == NULL) {
+        printf("Erro ao alocar memória\n");
+        return 1;
+    }
+
+    printf("\n\t| Insira os dados para a criação dos territórios |\n");
+
+    for (int x = 1; x <= n; x++)
     {
-        printf("\n--- Território %d ---\n", x+1);
+        printf("\n--- Território %d ---\n", x);
 
         printf("Qual é o nome do seu exército? ");
         scanf("%s", territorios[x].nomeDoT);
@@ -27,12 +60,49 @@ int main()
         scanf("%d", &territorios[x].tropas);
     }
 
-    printf("\nTerritórios criados\n");
-    for (int x = 0; x < 5; x++)
+    printf("\n--- Territórios criados ---\n");
+    for (int x = 1; x <= n; x++)
     {
         printf("Território %d = Nome: %s | Cor: %s | Tropas: %d \n",
-               x+1, territorios[x].nomeDoT, territorios[x].corDoT, territorios[x].tropas);
+               x, territorios[x].nomeDoT, territorios[x].corDoT, territorios[x].tropas);
     }
+
+    int atc=0, def=0;
+
+    printf("\nDigite um número de 1 a %d para selecionar o exército que vai atacar:", n);
+    scanf("%d", &atc);
+
+    if (atc < 1 || atc > n) {
+        printf("Esse exército não existe!\n");
+        free(territorios);
+        return 0;
+    }
+
+    printf("Digite um número de 1 a %d para selecionar o exército que vai defender: ", n);
+    scanf("%d", &def);
+
+    if (def < 1 || def > n) {
+        printf("Esse exército não existe!\n");
+        free(territorios);
+        return 0;
+    }
+
+    printf("\nTerritório atacante -> Nome: %s | Cor: %s | Tropas: %d\n",
+           territorios[atc].nomeDoT, territorios[atc].corDoT, territorios[atc].tropas);
+
+    printf("Território defensor -> Nome: %s | Cor: %s | Tropas: %d\n",
+           territorios[def].nomeDoT, territorios[def].corDoT, territorios[def].tropas);
+
+    combate(&territorios[atc], &territorios[def]);
+
+    printf("\n--- Situação final dos territórios ---\n");
+    for (int x = 1; x <= n; x++)
+    {
+        printf("Território %d = Nome: %s | Cor: %s | Tropas: %d \n",
+               x, territorios[x].nomeDoT, territorios[x].corDoT, territorios[x].tropas);
+    }
+
+    free(territorios);
 
     return 0;
 }
