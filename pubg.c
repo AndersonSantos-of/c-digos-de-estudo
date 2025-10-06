@@ -11,7 +11,7 @@ typedef struct
 
 int main()
 {
-    item *cadastro = NULL; // mochila dinâmica
+    item *mochila = NULL; // mochila dinâmica
     int ic = 0;            // quantidade atual de itens
     int opc;
 
@@ -19,10 +19,12 @@ int main()
 
     do
     {
-        printf("\n1. Colocar item na mochila\n");
-        printf("2. Remover item da mochila\n");
-        printf("3. Visualizar itens da mochila\n");
-        printf("0. Sair\n");
+        printf("\nQuantidade de itens na mochila %d/10", ic);
+        printf("\n1. Colocar item na mochila.\n");
+        printf("2. Remover item da mochila.\n");
+        printf("3. Visualizar itens.\n");
+        printf("4. Selecionar um item.\n");
+        printf("0. Sair.\n");
         printf(">> Selecione uma opção: ");
         scanf("%d", &opc);
 
@@ -30,21 +32,27 @@ int main()
         {
         case 1:
         {
-            cadastro = realloc(cadastro, (ic + 1) * sizeof(item));
-            if (cadastro == NULL)
+            mochila = realloc(mochila, (ic + 1) * sizeof(item));
+            if (mochila == NULL)
             {
                 printf("Erro de memória!\n");
                 return 1;
             }
 
-            printf("Qual o nome do item? ");
-            scanf("%s", cadastro[ic].nome);
+            if (ic>=10)
+            {
+                printf("\nMochila lotada!");
+                break;
+            }
+
+            printf("\nQual o nome do item? ");
+            scanf("%s", mochila[ic].nome);
 
             printf("Qual o tipo de item? ");
-            scanf("%s", cadastro[ic].tipo);
+            scanf("%s", mochila[ic].tipo);
 
             printf("Qual a quantidade? ");
-            scanf("%d", &cadastro[ic].quantidade);
+            scanf("%d", &mochila[ic].quantidade);
 
             ic++;
             printf("Item adicionado!\n");
@@ -69,7 +77,7 @@ int main()
                 break;
             }
 
-            printf("É esse item %s que deseja remover?(Y/N): ", cadastro[a].nome);
+            printf("É esse item %s que deseja remover?(Y/N): ", mochila[a].nome);
             scanf(" %c", &c); // espaço antes de %c para ignorar \n pendente
 
             if (c == 'Y' || c == 'y')
@@ -77,11 +85,11 @@ int main()
                 // "puxa" os elementos seguintes
                 for (int j = a; j < ic - 1; j++)
                 {
-                    cadastro[j] = cadastro[j + 1];
+                    mochila[j] = mochila[j + 1];
                 }
                 ic--;
 
-                cadastro = realloc(cadastro, ic * sizeof(item));
+                mochila = realloc(mochila, ic * sizeof(item));
                 printf("Item removido!\n");
 
             } else if (c == 'N' || c == 'n')
@@ -104,20 +112,50 @@ int main()
                 for (int j = 0; j < ic; j++)
                 {
                     printf("[%d] Nome: %s | Tipo: %s | Quantidade: %d\n",
-                           j, cadastro[j].nome, cadastro[j].tipo, cadastro[j].quantidade);
+                           j, mochila[j].nome, mochila[j].tipo, mochila[j].quantidade);
                 }
             }
             break;
         }
+        case 4:
+        {
+            if (ic == 0)
+            {
+                printf("Mochila vazia\n");
+                break;
+            }
+
+            char slc[30];
+            int encontrado = 0;
+
+            printf("\nDigite o nome do item que deseja selecionar: ");
+            scanf("%s", slc);
+
+            for (int i = 0; i < ic; i++)
+            {
+                if (strcmp(mochila[i].nome, slc) == 0)
+                {
+                    printf(">>> %s selecionado!\n", mochila[i].nome);
+                    encontrado = 1;
+                    break;
+                }
+            }
+
+            if (!encontrado)
+                printf("Item não encontrado!\n");
+            
+            break;
+        }
         case 0:
+        {
             printf("Saindo...\n");
             break;
-
+        }
         default:
             printf("Opção inválida!\n");
-        }
+        }  
     } while (opc != 0);
 
-    free(cadastro);
+    free(mochila);
     return 0;
 }
