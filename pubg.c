@@ -7,10 +7,131 @@ typedef struct
     char nome[30];
     char tipo[30];
     int quantidade;
+    int prioridade;
 } item;
+
+// Ordena por NOME (ordem alfabética)
+void orgnome(item *vetor, int tamanho)
+{
+    for (int i = 0; i < tamanho - 1; i++)
+    {
+        int menor = i;
+        for (int j = i + 1; j < tamanho; j++)
+        {
+            if (strcmp(vetor[j].nome, vetor[menor].nome) < 0)
+            {
+                menor = j;
+            }
+        }
+        if (menor != i)
+        {
+            item temp = vetor[i];
+            vetor[i] = vetor[menor];
+            vetor[menor] = temp;
+        }
+    }
+}
+
+// Ordena por TIPO (ordem alfabética)
+void orgtip(item *vetor, int tamanho)
+{
+    for (int i = 0; i < tamanho - 1; i++)
+    {
+        int menor = i;
+        for (int j = i + 1; j < tamanho; j++)
+        {
+            if (strcmp(vetor[j].tipo, vetor[menor].tipo) < 0)
+            {
+                menor = j;
+            }
+        }
+        if (menor != i)
+        {
+            item temp = vetor[i];
+            vetor[i] = vetor[menor];
+            vetor[menor] = temp;
+        }
+    }
+}
+
+// Ordena por PRIORIDADE (menor → maior)
+void orgprio(item *vetor, int tamanho)
+{
+    for (int i = 0; i < tamanho - 1; i++)
+    {
+        int menor = i;
+        for (int j = i + 1; j < tamanho; j++)
+        {
+            if (vetor[j].prioridade < vetor[menor].prioridade)
+            {
+                menor = j;
+            }
+        }
+        if (menor != i)
+        {
+            item temp = vetor[i];
+            vetor[i] = vetor[menor];
+            vetor[menor] = temp;
+        }
+    }
+}
+
+void buscar_item(item *vetor, int tamanho, int ordNome)
+{
+    if (!ordNome)
+    {
+        printf("\n Erro: a busca só funciona se os itens estiverem organizados por nome!\n");
+        return;
+    }
+
+    if (tamanho == 0)
+    {
+        printf("A mochila está vazia.\n");
+        return;
+    }
+
+    char nomeBusca[30];
+    printf("\nDigite o nome do item que deseja buscar: ");
+    scanf("%s", nomeBusca);
+
+    int inicio = 0, fim = tamanho - 1;
+    int encontrado = -1;
+
+    while (inicio <= fim)
+    {
+        int meio = (inicio + fim) / 2;
+        int cmp = strcmp(vetor[meio].nome, nomeBusca);
+
+        if (cmp == 0)
+        {
+            encontrado = meio;
+            break;
+        }
+        else if (cmp < 0)
+            inicio = meio + 1;
+        else
+            fim = meio - 1;
+    }
+
+    if (encontrado != -1)
+    {
+        printf("\nItem encontrado!\n");
+        printf("[%d] Nome: %s | Tipo: %s | Quantidade: %d | Prioridade: %d\n",
+               encontrado,
+               vetor[encontrado].nome,
+               vetor[encontrado].tipo,
+               vetor[encontrado].quantidade,
+               vetor[encontrado].prioridade);
+    }
+    else
+    {
+        printf("\nItem não encontrado.\n");
+    }
+}
 
 int main()
 {
+    int ordNome = 0;
     item *mochila = NULL; // mochila dinâmica
     int ic = 0;            // quantidade atual de itens
     int opc;
@@ -23,7 +144,8 @@ int main()
         printf("\n1. Colocar item na mochila.\n");
         printf("2. Remover item da mochila.\n");
         printf("3. Visualizar itens.\n");
-        printf("4. Selecionar um item.\n");
+        printf("4. Ordenar itens.\n");
+        printf("5. Buscar um item.\n");
         printf("0. Sair.\n");
         printf(">> Selecione uma opção: ");
         scanf("%d", &opc);
@@ -47,12 +169,12 @@ int main()
 
             printf("\nQual o nome do item? ");
             scanf("%s", mochila[ic].nome);
-
             printf("Qual o tipo de item? ");
             scanf("%s", mochila[ic].tipo);
-
             printf("Qual a quantidade? ");
             scanf("%d", &mochila[ic].quantidade);
+            printf("Qual a prioridade?(1-3) ");
+            scanf("%d", &mochila[ic].prioridade);
 
             ic++;
             printf("Item adicionado!\n");
@@ -111,39 +233,49 @@ int main()
                 printf("\nItens na mochila:\n");
                 for (int j = 0; j < ic; j++)
                 {
-                    printf("[%d] Nome: %s | Tipo: %s | Quantidade: %d\n",
-                           j, mochila[j].nome, mochila[j].tipo, mochila[j].quantidade);
+                    printf("[%d] Nome: %s | Tipo: %s | Quantidade: %d | Prioridade: %d\n",
+                           j, mochila[j].nome, mochila[j].tipo, mochila[j].quantidade, mochila[j].prioridade);
                 }
             }
             break;
         }
         case 4:
         {
-            if (ic == 0)
+            int torg = 0;
+            printf("\nComo deseja organizar os itens?\n");
+            printf("1. Por nome.\n");
+            printf("2. Por tipo.\n");
+            printf("3. Por prioridade.\n");
+            printf(">> Digite aqui: ");
+            scanf("%d", &torg);
+
+            switch (torg)
             {
-                printf("Mochila vazia\n");
+            case 1:
+                orgnome(mochila, ic);
+                ordNome=1;
+                printf("Itens organizados por nome!\n");
+                break;
+            case 2:
+                orgtip(mochila, ic);
+                ordNome=0;
+                printf("Itens organizados por tipo!\n");
+                break;
+            case 3:
+                orgprio(mochila, ic);
+                ordNome=0;
+                printf("Itens organizados por prioridade!\n");
+                break;
+            default:
+                printf("Opção inválida.\n");
                 break;
             }
 
-            char slc[30];
-            int encontrado = 0;
-
-            printf("\nDigite o nome do item que deseja selecionar: ");
-            scanf("%s", slc);
-
-            for (int i = 0; i < ic; i++)
-            {
-                if (strcmp(mochila[i].nome, slc) == 0)
-                {
-                    printf(">>> %s selecionado!\n", mochila[i].nome);
-                    encontrado = 1;
-                    break;
-                }
-            }
-
-            if (!encontrado)
-                printf("Item não encontrado!\n");
-            
+            break;
+        }
+        case 5:
+        {
+            buscar_item(mochila, ic, ordNome);
             break;
         }
         case 0:
