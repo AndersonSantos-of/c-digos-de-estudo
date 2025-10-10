@@ -1,0 +1,123 @@
+#include <stdio.h>
+
+typedef struct{
+    char forma[2];
+    int id;
+} peca;
+
+#define max 5
+
+typedef struct{
+    peca itens[max];
+    int inicio;
+    int fim;
+    int total;
+} fila;
+
+void inserir(fila *f, peca p){
+    if (f->total == max){
+        printf("Fila cheia.\n");
+        return;
+    }
+
+    f->itens[f->fim] = p;
+    f->fim = (f->fim + 1) % max;
+    f->total++;
+}
+
+int filaVazia(fila *f){
+    return f->total == 0;
+}
+
+void mostrarfila(fila *f){
+    printf("\nFila: ");
+    for (int i = 0, idx = f->inicio; i < f->total; i++, idx = (idx + 1) % max){
+        printf("[%s, %d] ", f->itens[idx].forma, f->itens[idx].id);
+    }
+    printf("\n");
+}
+
+void remover(fila *f, peca *p) {
+    if (filaVazia(f)) {
+        printf("Fila vazia. Nenhuma peça foi removida.\n");
+        return;
+    }
+
+    *p = f->itens[f->inicio];
+    f->inicio = (f->inicio + 1) % max;
+    f->total--;
+    printf("Peça [%s | %d] removida com sucesso!\n", p->forma, p->id);
+}
+
+void inicializarfila(fila *f){
+    f->inicio = 0;
+    f->fim = 0;
+    f->total = 0;
+}
+
+int main()
+{
+    fila f;
+    inicializarfila(&f);
+    int op = 0;
+    int nid = 5;
+
+    peca n1 ={"L", 1};
+    peca n2 ={"I", 2};
+    peca n3 ={"T", 3};
+    peca n4 ={"O", 4};
+    peca n5 ={"L", 5};
+
+    inserir(&f, n1);
+    inserir(&f, n2);
+    inserir(&f, n3);
+    inserir(&f, n4);
+    inserir(&f, n5);
+
+    printf("\n\tINICIANDO O JOGO...\n");
+
+    do{
+        mostrarfila(&f);
+
+        printf("1. Inserir nova peça\n");
+        printf("2. Remover peça\n");
+        printf("0. Sair\n");
+        printf(">> Digite sua escolha: ");
+        scanf("%d", &op);
+
+        switch (op){
+            case 1:{
+                if (f.total == max){
+                    printf("Fila cheia.\n");
+                    break;
+                }
+            
+                peca pcn;
+                printf("\nSelecione uma entre: T, O, L, I\n");
+                printf("Qual peça deseja colocar? ");
+                scanf("%1s", pcn.forma);
+                nid++;
+                pcn.id = nid;
+                inserir(&f, pcn);
+                printf("Peça adicionada com sucesso!\n");
+                break;                
+            }
+            case 2:{
+                peca rmv;
+                remover(&f, &rmv);
+                break;
+            }
+            case 0:{
+                printf("Saindo do jogo...\n");
+                break;
+            }
+            default:{
+                printf("Opção inválida.\n");
+                break;
+            }
+        }
+
+    } while (op != 0);
+
+    return 0;
+}
