@@ -1,0 +1,97 @@
+#include <stdio.h>
+#include <stdlib.h>
+#include <string.h>
+
+typedef struct ponto {
+    char valor[50];
+    struct ponto* esquerda;
+    struct ponto* direita;
+} ponto;
+
+ponto *CriarPonto(char* valor) {
+    ponto *novo = (ponto*) malloc(sizeof(ponto));
+    if (novo == NULL) {
+        printf("Erro ao alocar memória.\n");
+        exit(1);
+    }
+
+    strcpy(novo->valor, valor);
+    novo->esquerda = NULL;
+    novo->direita = NULL;
+    return novo;
+}
+
+void liberar(ponto* raiz) {
+    if (raiz != NULL) {
+        liberar(raiz->esquerda);
+        liberar(raiz->direita);
+        free(raiz);
+    }
+}
+
+// --- VERSÃO VOID: usa ponteiro duplo (ponto**) ---
+
+void andarEsquerda(ponto **atual) {
+    if ((*atual)->esquerda != NULL) {
+        *atual = (*atual)->esquerda;
+        printf("\nVocê foi para: %s\n", (*atual)->valor);
+    } else {
+        printf("\nNão há caminho à esquerda!\n");
+    }
+}
+
+void andarDireita(ponto **atual) {
+    if ((*atual)->direita != NULL) {
+        *atual = (*atual)->direita;
+        printf("\nVocê foi para: %s\n", (*atual)->valor);
+    } else {
+        printf("\nNão há caminho à direita!\n");
+    }
+}
+
+int main() {
+    int opcao;
+    ponto *raiz = CriarPonto("Entrada");
+    ponto *atual = raiz; // jogador começa na raiz
+
+    // Montagem da árvore
+    raiz->esquerda = CriarPonto("Sala de estar");
+    raiz->direita = CriarPonto("Biblioteca");
+
+    raiz->esquerda->esquerda = CriarPonto("Quarto");
+    raiz->esquerda->direita = CriarPonto("Cinema");
+
+    printf("\n\tINICIANDO JOGO...\n");
+
+    do {
+        printf("\nVocê está em: %s\n", atual->valor);
+        printf("1. Ir para esquerda\n");
+        printf("2. Ir para direita\n");
+        printf("3. Voltar para o início\n");
+        printf("0. Sair\n");
+        printf("Escolha uma opção: ");
+        scanf("%d", &opcao);
+
+        switch (opcao) {
+            case 1:
+                andarEsquerda(&atual); // passa o endereço de atual
+                break;
+            case 2:
+                andarDireita(&atual); // idem
+                break;
+            case 3:
+                atual = raiz;
+                printf("\nVocê voltou para: %s\n", atual->valor);
+                break;
+            case 0:
+                printf("\nSaindo do jogo...\n");
+                break;
+            default:
+                printf("\nOpção inválida.\n");
+                break;
+        }
+    } while (opcao != 0);
+
+    liberar(raiz);
+    return 0;
+}
