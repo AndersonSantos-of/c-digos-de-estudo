@@ -2,6 +2,7 @@
 #include <string.h>
 #include <stdlib.h>
 // vendo no que dá
+
 typedef struct
 {
     char nome[30];

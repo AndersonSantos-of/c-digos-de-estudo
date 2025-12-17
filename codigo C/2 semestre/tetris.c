@@ -1,6 +1,7 @@
 #include <stdio.h>
 #include <stdlib.h>
 #include <time.h>
+// testando
 
 typedef struct{
     char forma[2];
