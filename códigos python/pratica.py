@@ -3,17 +3,17 @@ for i in range (0, 60, 5):
         break
     print(i)
 
-print('----------')
+print('\n1 ----------\n')
 for i in range (0, 60, 5):
     if i==15: # vai pular o 15
         continue # usado para pular determinada coisa
     print(i)
 
-print('----------')
+print('\n2 ----------\n')
 for letra in 'Anderson':
     print(letra)
 
-print('----------')
+print('\n3 ----------\n')
 x=['Anderson', 5, 3.14]
 for y in x:
     print(y)
@@ -24,20 +24,24 @@ dicionario= {
     'I':9
 }
 
-print('----------')
+print('\n4 ----------\n')
 for letra, posição in dicionario.items(): # tô pegando o conjunto chave e valor do dic
     print(f'A letra {letra} está na posição {posição}')
 
-print('----------')
+print('\n5 ----------\n')
 for chave in dicionario: # tô pegando só as chaves
     print(chave)
 
-print('----------')
+print('\n6 ----------\n')
 for chave in dicionario.keys(): # aqui também tô pegando só as chaves
     print(chave)
 
-print('----------')
+print('\n7 ----------\n')
 for valor in dicionario.values(): # aqui eu tô pegando o valor das chaves
     print(valor)
+
+print('\n8 ----------\n')
+for chave in dicionario: # usando as chaves percorridas pelo for
+    print(dicionario[chave]) # para acessar os valors em dicionario
 
 print("\nfinalizado")
