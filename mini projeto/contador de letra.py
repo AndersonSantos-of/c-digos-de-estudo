@@ -25,12 +25,13 @@ def limpar_Vogais(texto):
 contagem={}
 porcentagem=[]
 vogais=[]
+valores=[]
 
 texto=leitor("/home/asc/Downloads/internet/A-ARTE-DA-GUERRA.pdf")
 
-#coloquei tudo em maiúscula para ficar melhor
+#coloquei em letras maiúscula para simplificar
 PalavraNormalizada=texto.upper()
-#agora chamei a função para limpar
+#chamando a função para limpar o pdf
 PalavraNormalizada=limpar_Vogais(PalavraNormalizada)
 
 #conta quantos caracteres totais foam separados
@@ -51,18 +52,65 @@ for y,x in contagem.items():
     porcentagem.append(x)
     vogais.append(y)    
 
+for x,y in contagem.items():
+    print(f'{x} : {y}')
+
+#for para pegar os valores do dic e usar no gráfico de valores absolutos
+for z in contagem.values():
+    valores.append(z)
+
 print(porcentagem)
 print(vogais)
 
-#cria o gráfico
-plt.ylim(0, 35)
-plt.yticks(range(0, 36, 5), [f'{i}%' for i in range(0, 36, 5)])
+#cria uma figura com dois eixos para dois gráficos
+fig, axs = plt.subplots(2, 1, figsize=(8, 8))
 
-plt.bar(vogais,porcentagem)
+# -------- PORCENTAGEM --------
+axs[0].set_ylim(0, 35) #define os limitos do gráfico
+axs[0].set_yticks(range(0, 36, 5),[f'{i}%' for i in range(0, 36, 5)]) #define as marcações
 
-plt.title('Porcentagem relativa das vogais')
-plt.xlabel('Vogais')
-plt.ylabel('Porcentagem(%)')
+axs[0].bar(vogais, porcentagem)
+axs[0].set_title('Porcentagem relativa das vogais')
+axs[0].set_xlabel('Vogais', loc='right') #loc define o alinhamento do texto
+axs[0].set_ylabel('Porcentagem (%)')
+barras = axs[0].bar(vogais, porcentagem)
 
+for barra, valor in zip(barras, porcentagem):
+    altura = barra.get_height()
+    axs[0].text(
+        barra.get_x() + barra.get_width() / 2,
+        altura,
+        f'{valor:.2f}%',
+        ha='center',
+        va='bottom'
+    )
+
+# -------- VALOR ABSOLUTO --------
+axs[1].set_ylim(0, 12000)
+axs[1].set_yticks(range(0, 12001, 2000),range(0, 12001, 2000))
+
+axs[1].bar(vogais, valores)
+axs[1].set_title('Número absoluto das vogais')
+axs[1].set_xlabel('Vogais', loc='right')
+axs[1].set_ylabel('Quantidade')
+
+barras = axs[1].bar(vogais, valores)
+
+for barra, valor in zip(barras, valores):
+    altura = barra.get_height()
+    axs[1].text(
+        barra.get_x() + barra.get_width() / 2,
+        altura,
+        f'{valor}',
+        ha='center',
+        va='bottom'
+    )
+
+# Ajusta o layout dos gráficos na figura
+plt.tight_layout()
+#definindo as cores das barras
+axs[0].bar(vogais, porcentagem, color="#dbd522")
+axs[1].bar(vogais, valores, color="#11a035")
+
+#mostra os gráficos
 plt.show()
-
