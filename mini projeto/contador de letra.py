@@ -27,7 +27,8 @@ porcentagem=[]
 vogais=[]
 valores=[]
 
-texto=leitor("/home/asc/Downloads/internet/A-ARTE-DA-GUERRA.pdf")
+texto=leitor("/home/asc/Downloads/arq importante/" \
+"ROTEIRO PARA ELABORAÇÃO DO MINI-PROJETO.pdf")
 
 #coloquei em letras maiúscula para simplificar
 PalavraNormalizada=texto.upper()
@@ -36,6 +37,10 @@ PalavraNormalizada=limpar_Vogais(PalavraNormalizada)
 
 #conta quantos caracteres totais foam separados
 quantidade=int(len(PalavraNormalizada))
+referencia=round(quantidade,-2)
+
+ls=int(round((referencia/3),-2)+100)
+passo=int(round((referencia/10),-2))
 
 #for para contar as vogais
 for letra in PalavraNormalizada:
@@ -51,6 +56,11 @@ for y,x in contagem.items():
     porcentagem.append(x)
     vogais.append(y)    
 
+pp=max(porcentagem)/10
+pp=int(round(pp)+1)
+lsp=max(porcentagem)
+lsp=int(round(lsp)+5)
+
 #for para pegar os valores do dic e usar no gráfico de valores absolutos
 for z in contagem.values():
     valores.append(z)
@@ -59,8 +69,8 @@ for z in contagem.values():
 fig, axs = plt.subplots(2, 1, figsize=(8, 8))
 
 # -------- PORCENTAGEM --------
-axs[0].set_ylim(0, 35) #define os limitos do gráfico
-axs[0].set_yticks(range(0, 36, 5),[f'{i}%' for i in range(0, 36, 5)]) #define as marcações
+axs[0].set_ylim(0, lsp+1) #define os limitos do gráfico
+axs[0].set_yticks(range(0, lsp+1, pp),[f'{i}%' for i in range(0, lsp+1, pp)]) #define as marcações
 
 axs[0].set_title('Porcentagem relativa das vogais')
 axs[0].set_xlabel('Vogais', loc='right') #loc define o alinhamento do texto
@@ -78,8 +88,8 @@ for barra, valor in zip(barras, porcentagem):
     )
 
 # -------- VALOR ABSOLUTO --------
-axs[1].set_ylim(0, 12000)
-axs[1].set_yticks(range(0, 12001, 2000),range(0, 12001, 2000))
+axs[1].set_ylim(0,ls)
+axs[1].set_yticks(range(0, ls, passo))
 
 axs[1].set_title('Número absoluto das vogais')
 axs[1].set_xlabel('Vogais', loc='right')
@@ -87,12 +97,11 @@ axs[1].set_ylabel('Quantidade')
 
 barras = axs[1].bar(vogais, valores)
 axs[1].text(
-    0.95, 0.95,
+    0.97, 0.96,
     f'Total de vogais: {quantidade}',
     transform=axs[1].transAxes,
     ha='right',
     va='top',
-    bbox=dict(boxstyle='round', alpha=0.1)
 )
 
 for barra, valor in zip(barras, valores):
