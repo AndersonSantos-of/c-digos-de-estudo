@@ -36,7 +36,6 @@ PalavraNormalizada=limpar_Vogais(PalavraNormalizada)
 
 #conta quantos caracteres totais foam separados
 quantidade=int(len(PalavraNormalizada))
-print(quantidade)
 
 #for para contar as vogais
 for letra in PalavraNormalizada:
@@ -52,15 +51,9 @@ for y,x in contagem.items():
     porcentagem.append(x)
     vogais.append(y)    
 
-for x,y in contagem.items():
-    print(f'{x} : {y}')
-
 #for para pegar os valores do dic e usar no gráfico de valores absolutos
 for z in contagem.values():
     valores.append(z)
-
-print(porcentagem)
-print(vogais)
 
 #cria uma figura com dois eixos para dois gráficos
 fig, axs = plt.subplots(2, 1, figsize=(8, 8))
@@ -69,7 +62,6 @@ fig, axs = plt.subplots(2, 1, figsize=(8, 8))
 axs[0].set_ylim(0, 35) #define os limitos do gráfico
 axs[0].set_yticks(range(0, 36, 5),[f'{i}%' for i in range(0, 36, 5)]) #define as marcações
 
-axs[0].bar(vogais, porcentagem)
 axs[0].set_title('Porcentagem relativa das vogais')
 axs[0].set_xlabel('Vogais', loc='right') #loc define o alinhamento do texto
 axs[0].set_ylabel('Porcentagem (%)')
@@ -89,12 +81,19 @@ for barra, valor in zip(barras, porcentagem):
 axs[1].set_ylim(0, 12000)
 axs[1].set_yticks(range(0, 12001, 2000),range(0, 12001, 2000))
 
-axs[1].bar(vogais, valores)
 axs[1].set_title('Número absoluto das vogais')
 axs[1].set_xlabel('Vogais', loc='right')
 axs[1].set_ylabel('Quantidade')
 
 barras = axs[1].bar(vogais, valores)
+axs[1].text(
+    0.95, 0.95,
+    f'Total de vogais: {quantidade}',
+    transform=axs[1].transAxes,
+    ha='right',
+    va='top',
+    bbox=dict(boxstyle='round', alpha=0.1)
+)
 
 for barra, valor in zip(barras, valores):
     altura = barra.get_height()
@@ -109,8 +108,8 @@ for barra, valor in zip(barras, valores):
 # Ajusta o layout dos gráficos na figura
 plt.tight_layout()
 #definindo as cores das barras
-axs[0].bar(vogais, porcentagem, color="#dbd522")
-axs[1].bar(vogais, valores, color="#11a035")
+axs[0].bar(vogais, porcentagem, color="#e1730c")
+axs[1].bar(vogais, valores, color="#dbdb07")
 
 #mostra os gráficos
 plt.show()
