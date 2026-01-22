@@ -26,7 +26,7 @@ contagem={}
 maximo=0
 porcentagem=[]
 referencia=0
-vogais=[]
+alfabeto=[]
 valores=[]
 
 texto=leitor("/home/asc/Downloads/internet/" \
@@ -54,16 +54,17 @@ for letra in PalavraNormalizada:
     else:
         contagem[letra]=1
 
+# ordena o dicionário em ordem alfabética (A–Z)
+contagem_ordenada = dict(sorted(contagem.items()))
+
 #for para saber a porcentagem de cade vogal
 #também cria as classes das vogais
-for y,x in contagem.items():
-    x=(x/quantidade)*100
-    porcentagem.append(x)
-    vogais.append(y)    
+for letra, qtd in contagem_ordenada.items():
+    alfabeto.append(letra)
+    valores.append(qtd)
+    porcentagem.append((qtd / quantidade) * 100)  
 
 #for para pegar os valores do dic e usar no gráfico de valores absolutos
-for z in contagem.values():
-    valores.append(z)
 
 pp=max(porcentagem)/2
 pp=int(round(pp))
@@ -92,7 +93,7 @@ axs[0].set_title('PORCENTAGEM RELAVITA')
 axs[0].set_xlabel('LETRAS', loc='right') #loc define o alinhamento do texto
 axs[0].set_ylabel('PORCENTAGEM (%)')
 
-barras = axs[0].bar(vogais, porcentagem)
+barras = axs[0].bar(alfabeto, porcentagem)
 for barra, valor in zip(barras, porcentagem):
     altura = barra.get_height()
     axs[0].text(
@@ -108,10 +109,10 @@ axs[1].set_ylim(0,ls+1)
 axs[1].set_yticks(range(0, ls+1, passo))
 
 axs[1].set_title('NÚMEROS ABSOLUTOS')
-axs[1].set_xlabel('VOGAIS', loc='right')
+axs[1].set_xlabel('LETRAS', loc='right')
 axs[1].set_ylabel('QUANTIDADE')
 
-barras = axs[1].bar(vogais, valores)
+barras = axs[1].bar(alfabeto, valores)
 axs[1].text(
     0.97, 0.96,
     f'TOTAL DE LETRAS: {quantidade}',
@@ -133,8 +134,8 @@ for barra, valor in zip(barras, valores):
 # Ajusta o layout dos gráficos na figura
 plt.tight_layout()
 #definindo as cores das barras
-axs[0].bar(vogais, porcentagem, color="#e1730c")
-axs[1].bar(vogais, valores, color="#dbdb07")
+axs[0].bar(alfabeto, porcentagem, color="#e1730c")
+axs[1].bar(alfabeto, valores, color="#dbdb07")
 
 #mostra os gráficos
 plt.show()
