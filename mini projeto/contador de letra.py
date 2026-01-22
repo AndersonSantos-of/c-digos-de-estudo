@@ -20,15 +20,17 @@ def limpar_Vogais(texto):
         c for c in unicodedata.normalize('NFD', texto) #separa os caracteres especiais, se for á vira a+´
         if unicodedata.category(c) != 'Mn'#tudo q não for acento vai parar dentro do c
     )
-    return re.sub(r'[^AEIOUaeiou]', '', texto)#tudo que não for vogal é trocado por nulo
+    return re.sub(r'[^A-Z]', '', texto)#tudo que não for vogal é trocado por nulo
 
 contagem={}
+maximo=0
 porcentagem=[]
+referencia=0
 vogais=[]
 valores=[]
 
-texto=leitor("/home/asc/Downloads/arq importante/" \
-"ROTEIRO PARA ELABORAÇÃO DO MINI-PROJETO.pdf")
+texto=leitor("/home/asc/Downloads/internet/" \
+"A-ARTE-DA-GUERRA.pdf")
 
 #coloquei em letras maiúscula para simplificar
 PalavraNormalizada=texto.upper()
@@ -37,10 +39,13 @@ PalavraNormalizada=limpar_Vogais(PalavraNormalizada)
 
 #conta quantos caracteres totais foam separados
 quantidade=int(len(PalavraNormalizada))
-referencia=round(quantidade,-2)
 
-ls=int(round((referencia/3),-2)+100)
-passo=int(round((referencia/10),-2))
+if quantidade>10000:
+    referencia=round(quantidade,-3)
+elif quantidade>100:
+    referencia=round(quantidade,-2)
+else:
+    referencia=round(quantidade)
 
 #for para contar as vogais
 for letra in PalavraNormalizada:
@@ -56,14 +61,25 @@ for y,x in contagem.items():
     porcentagem.append(x)
     vogais.append(y)    
 
-pp=max(porcentagem)/10
-pp=int(round(pp)+1)
-lsp=max(porcentagem)
-lsp=int(round(lsp)+5)
-
 #for para pegar os valores do dic e usar no gráfico de valores absolutos
 for z in contagem.values():
     valores.append(z)
+
+pp=max(porcentagem)/2
+pp=int(round(pp))
+lsp=pp*4
+
+maximo=max(valores)
+
+if maximo>10000:
+    passo=int(round(maximo/2,-3))
+elif maximo>100:
+    passo=int(round(maximo/2,-2))
+else:
+    passo=int(round(maximo/2))
+
+ls=passo*4
+#-----------------------------
 
 #cria uma figura com dois eixos para dois gráficos
 fig, axs = plt.subplots(2, 1, figsize=(8, 8))
@@ -72,11 +88,11 @@ fig, axs = plt.subplots(2, 1, figsize=(8, 8))
 axs[0].set_ylim(0, lsp+1) #define os limitos do gráfico
 axs[0].set_yticks(range(0, lsp+1, pp),[f'{i}%' for i in range(0, lsp+1, pp)]) #define as marcações
 
-axs[0].set_title('Porcentagem relativa das vogais')
-axs[0].set_xlabel('Vogais', loc='right') #loc define o alinhamento do texto
-axs[0].set_ylabel('Porcentagem (%)')
-barras = axs[0].bar(vogais, porcentagem)
+axs[0].set_title('PORCENTAGEM RELAVITA')
+axs[0].set_xlabel('LETRAS', loc='right') #loc define o alinhamento do texto
+axs[0].set_ylabel('PORCENTAGEM (%)')
 
+barras = axs[0].bar(vogais, porcentagem)
 for barra, valor in zip(barras, porcentagem):
     altura = barra.get_height()
     axs[0].text(
@@ -88,17 +104,17 @@ for barra, valor in zip(barras, porcentagem):
     )
 
 # -------- VALOR ABSOLUTO --------
-axs[1].set_ylim(0,ls)
-axs[1].set_yticks(range(0, ls, passo))
+axs[1].set_ylim(0,ls+1)
+axs[1].set_yticks(range(0, ls+1, passo))
 
-axs[1].set_title('Número absoluto das vogais')
-axs[1].set_xlabel('Vogais', loc='right')
-axs[1].set_ylabel('Quantidade')
+axs[1].set_title('NÚMEROS ABSOLUTOS')
+axs[1].set_xlabel('VOGAIS', loc='right')
+axs[1].set_ylabel('QUANTIDADE')
 
 barras = axs[1].bar(vogais, valores)
 axs[1].text(
     0.97, 0.96,
-    f'Total de vogais: {quantidade}',
+    f'TOTAL DE LETRAS: {quantidade}',
     transform=axs[1].transAxes,
     ha='right',
     va='top',
